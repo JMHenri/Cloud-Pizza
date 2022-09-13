@@ -5,6 +5,26 @@ import sfn = require('@aws-cdk/aws-stepfunctions');
 import tasks = require('@aws-cdk/aws-stepfunctions-tasks');
 import { Effect, PolicyDocument, PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
 
+
+//object reference.
+declare enum addressType {
+  email,
+  endpoint
+}
+declare enum pizzaSizes {
+  small,
+  medium,
+  large
+}
+export type pizzaDelivery = {
+  addressType: addressType,
+  pizzaDetails: {
+      size: pizzaSizes,
+      price: number
+  }
+}
+
+
 export class TheStateMachineStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -13,25 +33,76 @@ export class TheStateMachineStack extends cdk.Stack {
      * Step Function Starts Here
      */
      
-    //The first thing we need to do is see if they are asking for pineapple on a pizza
-    let pineappleCheckLambda = new lambda.Function(this, 'pineappleCheckLambdaHandler', {
+    //Lambda - check store hours
+    let checkStoreHoursLambda = new lambda.Function(this, 'checkStoreHoursHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
       code: lambda.Code.fromAsset('lambda-fns'),
       handler: 'orderPizza.handler'
     });
-
-    // Step functions are built up of steps, we need to define our first step
-    const orderPizza = new tasks.LambdaInvoke(this, "Order Pizza Job", {
-      lambdaFunction: pineappleCheckLambda,
-      inputPath: '$.flavour',
-      resultPath: '$.pineappleAnalysis',
+    //Step - check store hours
+    const checkStoreHours = new tasks.LambdaInvoke(this, "Check Store Hours", {
+      lambdaFunction: checkStoreHoursLambda,
+      inputPath: '$',
+      resultPath: '$.storeIsOpen',
       payloadResponseOnly: true
     })
 
-    // Pizza Order failure step defined
-    const pineappleDetected = new sfn.Fail(this, 'Sorry, We Dont add Pineapple', {
-      cause: 'They asked for Pineapple',
-      error: 'Failed To Make Pizza',
+    //Lambda - check delivery type
+    let checkDeliveryTypeLambda = new lambda.Function(this, 'checkDeliveryTypeHandler', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset('lambda-fns'),
+      handler: 'orderPizza.handler'
+    });
+    //task - check delivery type
+    const checkDeliveryType = new tasks.LambdaInvoke(this, "Check Delivery Type", {
+      lambdaFunction: checkDeliveryTypeLambda,
+      inputPath: '$',
+      resultPath: '$.deliveryType',
+      payloadResponseOnly: true
+    })
+
+    /**
+     * delivery options
+     */
+     let emailPizzaLambda = new lambda.Function(this, 'emailPizzaHandler', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset('lambda-fns/delivery-opts'),
+      handler: 'emailPizza.handler'
+    });
+    //Step - check store hours
+    const emailPizza = new tasks.LambdaInvoke(this, "Email Pizza Delivery", {
+      lambdaFunction: emailPizzaLambda,
+      inputPath: '$',
+      resultPath: '$.emailResult',
+      payloadResponseOnly: true
+    })
+
+    let webPostPizzaLambda = new lambda.Function(this, 'webPostPizzaHandler', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset('lambda-fns/delivery-opts'),
+      handler: 'webPostPizza.handler'
+    });
+    //Step - check store hours
+    const webPostPizza = new tasks.LambdaInvoke(this, "Web Post Pizza Delivery", {
+      lambdaFunction: webPostPizzaLambda,
+      inputPath: '$',
+      resultPath: '$.webPostResult',
+      payloadResponseOnly: true
+    })
+
+
+
+
+    /**
+     * failures
+     */
+    const storeClosed = new sfn.Fail(this, 'Cloud pizzas can only be delivered on odd numbered epoch times, try again when the store is open.', {
+      cause: 'The store was closed',
+      error: 'Pizza order canceled: Store closed',
+    });
+    const cannotDeliver = new sfn.Fail(this, 'Cloud pizzas can only be delivered over the internet.', {
+      cause: 'The customer tried to order a real pizza',
+      error: 'Pizza order canceled: Cloud pizza only',
     });
 
     // If they didnt ask for pineapple let's cook the pizza
@@ -39,13 +110,27 @@ export class TheStateMachineStack extends cdk.Stack {
       outputPath: '$.pineappleAnalysis'
     });
 
+
+
     //Express Step function definition
-    const definition = sfn.Chain
-    .start(orderPizza)
-    .next(new sfn.Choice(this, 'With Pineapple?') // Logical choice added to flow
+
+    const checkDeliveryChain = sfn.Chain
+    .start(checkDeliveryType)
+    .next(new sfn.Choice(this, 'Can deliver?')
         // Look at the "status" field
-        .when(sfn.Condition.booleanEquals('$.pineappleAnalysis.containsPineapple', true), pineappleDetected) // Fail for pineapple
-        .otherwise(cookPizza));
+        .when(sfn.Condition.stringEquals('$.addressType', 'email'), emailPizza)
+        .when(sfn.Condition.stringEquals('$.addressType', 'endpoint'), webPostPizza));
+
+
+    const definition = sfn.Chain
+    .start(checkStoreHours)
+    .next(new sfn.Choice(this, 'Store is open?')
+        // Look at the "status" field
+        .when(sfn.Condition.booleanEquals('$.storeIsOpen', false), storeClosed)
+        .otherwise(checkDeliveryChain))
+
+
+
 
     let stateMachine = new sfn.StateMachine(this, 'StateMachine', {
       definition,
