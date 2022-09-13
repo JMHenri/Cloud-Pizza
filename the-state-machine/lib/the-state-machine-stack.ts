@@ -105,12 +105,6 @@ export class TheStateMachineStack extends cdk.Stack {
       error: 'Pizza order canceled: Cloud pizza only',
     });
 
-    // If they didnt ask for pineapple let's cook the pizza
-    const cookPizza = new sfn.Succeed(this, 'Lets make your pizza', {
-      outputPath: '$.pineappleAnalysis'
-    });
-
-
 
     //Express Step function definition
 
