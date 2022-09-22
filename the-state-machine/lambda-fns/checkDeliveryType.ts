@@ -1,16 +1,15 @@
 exports.handler = async function(customerInfo:any) {
     console.log("Processing pizza order:", JSON.stringify(customerInfo, undefined, 2));
     
-    let containsPineapple = false;
+    let canDeliver = false;
     
-    if(customerInfo.homeType === 'ip'){
-        //todo - post request pizza delivery.
-        containsPineapple = true;
-    } else if(customerInfo.homeType === 'email'){
-        //todo - ses pizza delivery
-    } else if(customerInfo.homeType === 'house'){
-        //todo - fail
+    if(customerInfo.addressType === 'post'){
+        canDeliver = true;
+    } else if(customerInfo.addressType === 'email'){
+        canDeliver = true;
+    } else if(customerInfo.addressType === 'physical'){
+        canDeliver = false;
     }
 
-    return {'containsPineapple': containsPineapple}
+    return {canDeliver};
 }

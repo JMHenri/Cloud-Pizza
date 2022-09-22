@@ -4,6 +4,8 @@ import apigw = require('@aws-cdk/aws-apigatewayv2');
 import sfn = require('@aws-cdk/aws-stepfunctions');
 import tasks = require('@aws-cdk/aws-stepfunctions-tasks');
 import { Effect, PolicyDocument, PolicyStatement, Role, ServicePrincipal } from '@aws-cdk/aws-iam';
+import * as stepfunctions from '@aws-cdk/aws-stepfunctions';
+
 
 
 //object reference.
@@ -32,14 +34,34 @@ export class TheStateMachineStack extends cdk.Stack {
     /**
      * Step Function Starts Here
      */
-     
-    //Lambda - check store hours
+
+
+     const catchProps: stepfunctions.CatchProps = {
+      errors: ['Something went wrong'],
+    };
+    //errorHandle
+    let notifySupportLambda = new lambda.Function(this, 'notifySupportHandler', {
+      runtime: lambda.Runtime.NODEJS_12_X,
+      code: lambda.Code.fromAsset('lambda-fns'),
+      handler: 'notifySupport.handler'
+    });
+    const notifySupport = new tasks.LambdaInvoke(this, "notifySupport", {
+      lambdaFunction: notifySupportLambda,
+      inputPath: '$',
+      resultPath: '$',
+      payloadResponseOnly: true,
+    })
+
+    
+
+
+
+    //check store hours
     let checkStoreHoursLambda = new lambda.Function(this, 'checkStoreHoursHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
       code: lambda.Code.fromAsset('lambda-fns'),
-      handler: 'orderPizza.handler'
+      handler: 'checkStoreHours.handler'
     });
-    //Step - check store hours
     const checkStoreHours = new tasks.LambdaInvoke(this, "Check Store Hours", {
       lambdaFunction: checkStoreHoursLambda,
       inputPath: '$',
@@ -51,13 +73,13 @@ export class TheStateMachineStack extends cdk.Stack {
     let checkDeliveryTypeLambda = new lambda.Function(this, 'checkDeliveryTypeHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
       code: lambda.Code.fromAsset('lambda-fns'),
-      handler: 'orderPizza.handler'
+      handler: 'checkDeliveryType.handler'
     });
     //task - check delivery type
     const checkDeliveryType = new tasks.LambdaInvoke(this, "Check Delivery Type", {
       lambdaFunction: checkDeliveryTypeLambda,
-      inputPath: '$',
-      resultPath: '$.deliveryType',
+      inputPath: '$.customerInfo',
+      resultPath: '$.canDeliver',
       payloadResponseOnly: true
     })
 
@@ -75,7 +97,7 @@ export class TheStateMachineStack extends cdk.Stack {
       inputPath: '$',
       resultPath: '$.emailResult',
       payloadResponseOnly: true
-    })
+    }).addCatch(notifySupport, catchProps);
 
     let webPostPizzaLambda = new lambda.Function(this, 'webPostPizzaHandler', {
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -87,16 +109,14 @@ export class TheStateMachineStack extends cdk.Stack {
       lambdaFunction: webPostPizzaLambda,
       inputPath: '$',
       resultPath: '$.webPostResult',
-      payloadResponseOnly: true
-    })
-
-
+      payloadResponseOnly: true,
+    }).addCatch(notifySupport, catchProps);
 
 
     /**
      * failures
      */
-    const storeClosed = new sfn.Fail(this, 'Cloud pizzas can only be delivered on odd numbered epochs', {
+    const storeClosed = new sfn.Fail(this, 'Can only deliver on odd numbered epoch times', {
       cause: 'The store was closed',
       error: 'Pizza order canceled: Store closed',
     });
@@ -107,20 +127,18 @@ export class TheStateMachineStack extends cdk.Stack {
 
 
     //Express Step function definition
-
     const checkDeliveryChain = sfn.Chain
     .start(checkDeliveryType)
-    .next(new sfn.Choice(this, 'Can deliver?')
-        // Look at the "status" field
-        .when(sfn.Condition.stringEquals('$.addressType', 'email'), emailPizza)
-        .when(sfn.Condition.stringEquals('$.addressType', 'endpoint'), webPostPizza));
+    .next(new sfn.Choice(this, 'Invoke Delivery')
+        .when(sfn.Condition.stringEquals('$.customerInfo.addressType', 'email'), emailPizza)
+        .when(sfn.Condition.stringEquals('$.customerInfo.addressType', 'endpoint'), webPostPizza)
+        .when(sfn.Condition.stringEquals('$.customerInfo.addressType', 'physical'), cannotDeliver));
 
 
     const definition = sfn.Chain
     .start(checkStoreHours)
     .next(new sfn.Choice(this, 'Store is open?')
-        // Look at the "status" field
-        .when(sfn.Condition.booleanEquals('$.storeIsOpen', false), storeClosed)
+        .when(sfn.Condition.booleanEquals('$.storesAreOpen', false), storeClosed)
         .otherwise(checkDeliveryChain))
 
 
