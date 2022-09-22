@@ -17,11 +17,11 @@ var post_data = querystring.stringify(pizza);
   // Set up the request, callback would for now so library imports can be avoided.
   var post_req = http.request(post_options, function(res: any) {
       res.setEncoding('utf8');
-      res.on('data', function (chunk) {
+      res.on('data', function (chunk: any) {
           console.log('Response: ' + chunk);
           callback(null, true);
       });
-      res.on('error', function (e) {
+      res.on('error', function (e: any) {
         console.log("Got error: " + e.message);
         callback(e, false);
       });

@@ -1,5 +1,5 @@
 Resources:
-  pineappleCheckLambdaHandlerServiceRoleFC4E3211:
+  checkStoreHoursHandlerServiceRole828F3182:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -16,13 +16,13 @@ Resources:
               - Ref: AWS::Partition
               - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
     Metadata:
-      aws:cdk:path: TheStateMachineStack/pineappleCheckLambdaHandler/ServiceRole/Resource
-  pineappleCheckLambdaHandlerFDB742D5:
+      aws:cdk:path: TheStateMachineStack/checkStoreHoursHandler/ServiceRole/Resource
+  checkStoreHoursHandler2C82889A:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket:
-          Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3Bucket3B22C27E
+          Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3Bucket842AB57C
         S3Key:
           Fn::Join:
             - ""
@@ -30,22 +30,170 @@ Resources:
                   - 0
                   - Fn::Split:
                       - "||"
-                      - Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3VersionKey90FD0468
+                      - Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3VersionKey7440F4A6
               - Fn::Select:
                   - 1
                   - Fn::Split:
                       - "||"
-                      - Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3VersionKey90FD0468
-      Handler: orderPizza.handler
+                      - Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3VersionKey7440F4A6
       Role:
         Fn::GetAtt:
-          - pineappleCheckLambdaHandlerServiceRoleFC4E3211
+          - checkStoreHoursHandlerServiceRole828F3182
           - Arn
+      Handler: orderPizza.handler
       Runtime: nodejs12.x
     DependsOn:
-      - pineappleCheckLambdaHandlerServiceRoleFC4E3211
+      - checkStoreHoursHandlerServiceRole828F3182
     Metadata:
-      aws:cdk:path: TheStateMachineStack/pineappleCheckLambdaHandler/Resource
+      aws:cdk:path: TheStateMachineStack/checkStoreHoursHandler/Resource
+      aws:asset:path: asset.3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2
+      aws:asset:property: Code
+  checkDeliveryTypeHandlerServiceRole87A645B1:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/checkDeliveryTypeHandler/ServiceRole/Resource
+  checkDeliveryTypeHandler71905A16:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3Bucket842AB57C
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3VersionKey7440F4A6
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3VersionKey7440F4A6
+      Role:
+        Fn::GetAtt:
+          - checkDeliveryTypeHandlerServiceRole87A645B1
+          - Arn
+      Handler: orderPizza.handler
+      Runtime: nodejs12.x
+    DependsOn:
+      - checkDeliveryTypeHandlerServiceRole87A645B1
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/checkDeliveryTypeHandler/Resource
+      aws:asset:path: asset.3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2
+      aws:asset:property: Code
+  emailPizzaHandlerServiceRole9F9BBA4A:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/emailPizzaHandler/ServiceRole/Resource
+  emailPizzaHandlerDC7C690A:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3Bucket37CB776A
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3VersionKeyB761AB89
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3VersionKeyB761AB89
+      Role:
+        Fn::GetAtt:
+          - emailPizzaHandlerServiceRole9F9BBA4A
+          - Arn
+      Handler: emailPizza.handler
+      Runtime: nodejs12.x
+    DependsOn:
+      - emailPizzaHandlerServiceRole9F9BBA4A
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/emailPizzaHandler/Resource
+      aws:asset:path: asset.57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09
+      aws:asset:property: Code
+  webPostPizzaHandlerServiceRole36375B99:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/webPostPizzaHandler/ServiceRole/Resource
+  webPostPizzaHandlerC2594DFC:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3Bucket37CB776A
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3VersionKeyB761AB89
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3VersionKeyB761AB89
+      Role:
+        Fn::GetAtt:
+          - webPostPizzaHandlerServiceRole36375B99
+          - Arn
+      Handler: webPostPizza.handler
+      Runtime: nodejs12.x
+    DependsOn:
+      - webPostPizzaHandlerServiceRole36375B99
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/webPostPizzaHandler/Resource
+      aws:asset:path: asset.57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09
       aws:asset:property: Code
   StateMachineRoleB840431D:
     Type: AWS::IAM::Role
@@ -69,11 +217,36 @@ Resources:
     Properties:
       PolicyDocument:
         Statement:
+          - Action:
+              - xray:PutTraceSegments
+              - xray:PutTelemetryRecords
+              - xray:GetSamplingRules
+              - xray:GetSamplingTargets
+            Effect: Allow
+            Resource: "*"
           - Action: lambda:InvokeFunction
             Effect: Allow
             Resource:
               Fn::GetAtt:
-                - pineappleCheckLambdaHandlerFDB742D5
+                - checkStoreHoursHandler2C82889A
+                - Arn
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - checkDeliveryTypeHandler71905A16
+                - Arn
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - emailPizzaHandlerDC7C690A
+                - Arn
+          - Action: lambda:InvokeFunction
+            Effect: Allow
+            Resource:
+              Fn::GetAtt:
+                - webPostPizzaHandlerC2594DFC
                 - Arn
         Version: "2012-10-17"
       PolicyName: StateMachineRoleDefaultPolicyDF1E6607
@@ -84,137 +257,39 @@ Resources:
   StateMachine2E01A3A5:
     Type: AWS::StepFunctions::StateMachine
     Properties:
-      DefinitionString:
-        Fn::Join:
-          - ""
-          - - '{"StartAt":"Order Pizza Job","States":{"Order Pizza Job":{"Next":"With Pineapple?","InputPath":"$.flavour","Type":"Task","Resource":"'
-            - Fn::GetAtt:
-                - pineappleCheckLambdaHandlerFDB742D5
-                - Arn
-            - '","ResultPath":"$.pineappleAnalysis"},"With Pineapple?":{"Type":"Choice","Choices":[{"Variable":"$.pineappleAnalysis.containsPineapple","BooleanEquals":true,"Next":"Sorry, We Dont add Pineapple"}],"Default":"Lets make your pizza"},"Lets make your pizza":{"Type":"Pass","End":true},"Sorry, We Dont add Pineapple":{"Type":"Fail","Error":"They asked for Pineapple","Cause":"Failed To Make Pizza"}},"TimeoutSeconds":300}'
       RoleArn:
         Fn::GetAtt:
           - StateMachineRoleB840431D
           - Arn
+      DefinitionString:
+        Fn::Join:
+          - ""
+          - - '{"StartAt":"Check Store Hours","States":{"Check Store Hours":{"Next":"Store is open?","Retry":[{"ErrorEquals":["Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$","ResultPath":"$.storeIsOpen","Resource":"'
+            - Fn::GetAtt:
+                - checkStoreHoursHandler2C82889A
+                - Arn
+            - '"},"Store is open?":{"Type":"Choice","Choices":[{"Variable":"$.storeIsOpen","BooleanEquals":false,"Next":"Cloud pizzas can only be delivered on odd numbered epoch times, try again when the store is open."}],"Default":"Check Delivery Type"},"Check Delivery Type":{"Next":"Can deliver?","Retry":[{"ErrorEquals":["Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$","ResultPath":"$.deliveryType","Resource":"'
+            - Fn::GetAtt:
+                - checkDeliveryTypeHandler71905A16
+                - Arn
+            - '"},"Can deliver?":{"Type":"Choice","Choices":[{"Variable":"$.addressType","StringEquals":"email","Next":"Email Pizza Delivery"},{"Variable":"$.addressType","StringEquals":"endpoint","Next":"Web Post Pizza Delivery"}]},"Email Pizza Delivery":{"End":true,"Retry":[{"ErrorEquals":["Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$","ResultPath":"$.emailResult","Resource":"'
+            - Fn::GetAtt:
+                - emailPizzaHandlerDC7C690A
+                - Arn
+            - '"},"Web Post Pizza Delivery":{"End":true,"Retry":[{"ErrorEquals":["Lambda.ServiceException","Lambda.AWSLambdaException","Lambda.SdkClientException"],"IntervalSeconds":2,"MaxAttempts":6,"BackoffRate":2}],"Type":"Task","InputPath":"$","ResultPath":"$.webPostResult","Resource":"'
+            - Fn::GetAtt:
+                - webPostPizzaHandlerC2594DFC
+                - Arn
+            - '"},"Cloud pizzas can only be delivered on odd numbered epoch times, try again when the store is open.":{"Type":"Fail","Error":"Pizza order canceled: Store closed","Cause":"The store was closed"}},"TimeoutSeconds":300}'
+      StateMachineType: EXPRESS
+      TracingConfiguration:
+        Enabled: true
     DependsOn:
       - StateMachineRoleDefaultPolicyDF1E6607
       - StateMachineRoleB840431D
     Metadata:
       aws:cdk:path: TheStateMachineStack/StateMachine/Resource
-  stateMachineLambdaDLQ2E386ECB:
-    Type: AWS::SQS::Queue
-    Properties:
-      VisibilityTimeout: 300
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/stateMachineLambdaDLQ/Resource
-  stateMachineLambdaHandlerServiceRoleDEB9C06E:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: lambda.amazonaws.com
-        Version: "2012-10-17"
-      ManagedPolicyArns:
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/stateMachineLambdaHandler/ServiceRole/Resource
-  stateMachineLambdaHandlerServiceRoleDefaultPolicyEFBA4308:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyDocument:
-        Statement:
-          - Action: sqs:SendMessage
-            Effect: Allow
-            Resource:
-              Fn::GetAtt:
-                - stateMachineLambdaDLQ2E386ECB
-                - Arn
-          - Action: states:StartExecution
-            Effect: Allow
-            Resource:
-              Ref: StateMachine2E01A3A5
-        Version: "2012-10-17"
-      PolicyName: stateMachineLambdaHandlerServiceRoleDefaultPolicyEFBA4308
-      Roles:
-        - Ref: stateMachineLambdaHandlerServiceRoleDEB9C06E
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/stateMachineLambdaHandler/ServiceRole/DefaultPolicy/Resource
-  stateMachineLambdaHandler8A4FAE4C:
-    Type: AWS::Lambda::Function
-    Properties:
-      Code:
-        S3Bucket:
-          Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3Bucket3B22C27E
-        S3Key:
-          Fn::Join:
-            - ""
-            - - Fn::Select:
-                  - 0
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3VersionKey90FD0468
-              - Fn::Select:
-                  - 1
-                  - Fn::Split:
-                      - "||"
-                      - Ref: AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3VersionKey90FD0468
-      Handler: stateMachineLambda.handler
-      Role:
-        Fn::GetAtt:
-          - stateMachineLambdaHandlerServiceRoleDEB9C06E
-          - Arn
-      Runtime: nodejs12.x
-      DeadLetterConfig:
-        TargetArn:
-          Fn::GetAtt:
-            - stateMachineLambdaDLQ2E386ECB
-            - Arn
-      Environment:
-        Variables:
-          statemachine_arn:
-            Ref: StateMachine2E01A3A5
-    DependsOn:
-      - stateMachineLambdaHandlerServiceRoleDefaultPolicyEFBA4308
-      - stateMachineLambdaHandlerServiceRoleDEB9C06E
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/stateMachineLambdaHandler/Resource
-      aws:asset:property: Code
-  EndpointEEF1FD8F:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      Name: Endpoint
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Resource
-  EndpointDeployment318525DAc90cb9b5fbfaca8ef48f374aa6a5c8f5:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId:
-        Ref: EndpointEEF1FD8F
-      Description: Automatically created by the RestApi construct
-    DependsOn:
-      - EndpointproxyANYC09721C5
-      - Endpointproxy39E2174E
-      - EndpointANY485C938B
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Deployment/Resource
-  EndpointDeploymentStageprodB78BEEA0:
-    Type: AWS::ApiGateway::Stage
-    Properties:
-      RestApiId:
-        Ref: EndpointEEF1FD8F
-      DeploymentId:
-        Ref: EndpointDeployment318525DAc90cb9b5fbfaca8ef48f374aa6a5c8f5
-      StageName: prod
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/DeploymentStage.prod/Resource
-  EndpointCloudWatchRoleC3C64E0F:
+  HttpApiRole79B5C31A:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -224,220 +299,111 @@ Resources:
             Principal:
               Service: apigateway.amazonaws.com
         Version: "2012-10-17"
-      ManagedPolicyArns:
-        - Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action: states:StartSyncExecution
+                Effect: Allow
+                Resource:
+                  Ref: StateMachine2E01A3A5
+            Version: "2012-10-17"
+          PolicyName: AllowSFNExec
     Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/CloudWatchRole/Resource
-  EndpointAccountB8304247:
-    Type: AWS::ApiGateway::Account
+      aws:cdk:path: TheStateMachineStack/HttpApiRole/Resource
+  thestatemachineapi69C81CC4:
+    Type: AWS::ApiGatewayV2::Api
     Properties:
-      CloudWatchRoleArn:
+      Name: the-state-machine-api
+      ProtocolType: HTTP
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/the-state-machine-api/Resource
+  thestatemachineapiDefaultStageE23A2C15:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId:
+        Ref: thestatemachineapi69C81CC4
+      StageName: $default
+      AutoDeploy: true
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/the-state-machine-api/DefaultStage/Resource
+  Integ:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId:
+        Ref: thestatemachineapi69C81CC4
+      IntegrationType: AWS_PROXY
+      ConnectionType: INTERNET
+      CredentialsArn:
         Fn::GetAtt:
-          - EndpointCloudWatchRoleC3C64E0F
+          - HttpApiRole79B5C31A
           - Arn
-    DependsOn:
-      - EndpointEEF1FD8F
+      IntegrationSubtype: StepFunctions-StartSyncExecution
+      PayloadFormatVersion: "1.0"
+      RequestParameters:
+        Input: $request.body
+        StateMachineArn:
+          Ref: StateMachine2E01A3A5
+      TimeoutInMillis: 10000
     Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Account
-  Endpointproxy39E2174E:
-    Type: AWS::ApiGateway::Resource
+      aws:cdk:path: TheStateMachineStack/Integ
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
     Properties:
-      ParentId:
-        Fn::GetAtt:
-          - EndpointEEF1FD8F
-          - RootResourceId
-      PathPart: "{proxy+}"
-      RestApiId:
-        Ref: EndpointEEF1FD8F
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/{proxy+}/Resource
-  EndpointproxyANYApiPermissionTheStateMachineStackEndpoint117BBC54ANYproxy6FDBAB75:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - stateMachineLambdaHandler8A4FAE4C
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
+      ApiId:
+        Ref: thestatemachineapi69C81CC4
+      RouteKey: $default
+      Target:
         Fn::Join:
           - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: EndpointEEF1FD8F
-            - /
-            - Ref: EndpointDeploymentStageprodB78BEEA0
-            - /*/{proxy+}
+          - - integrations/
+            - Ref: Integ
     Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/{proxy+}/ANY/ApiPermission.TheStateMachineStackEndpoint117BBC54.ANY..{proxy+}
-  EndpointproxyANYApiPermissionTestTheStateMachineStackEndpoint117BBC54ANYproxyB3FE9FB8:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - stateMachineLambdaHandler8A4FAE4C
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: EndpointEEF1FD8F
-            - /test-invoke-stage/*/{proxy+}
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/{proxy+}/ANY/ApiPermission.Test.TheStateMachineStackEndpoint117BBC54.ANY..{proxy+}
-  EndpointproxyANYC09721C5:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: ANY
-      ResourceId:
-        Ref: Endpointproxy39E2174E
-      RestApiId:
-        Ref: EndpointEEF1FD8F
-      AuthorizationType: NONE
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - stateMachineLambdaHandler8A4FAE4C
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/{proxy+}/ANY/Resource
-  EndpointANYApiPermissionTheStateMachineStackEndpoint117BBC54ANY8AF83FF8:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - stateMachineLambdaHandler8A4FAE4C
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: EndpointEEF1FD8F
-            - /
-            - Ref: EndpointDeploymentStageprodB78BEEA0
-            - /*/
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/ANY/ApiPermission.TheStateMachineStackEndpoint117BBC54.ANY..
-  EndpointANYApiPermissionTestTheStateMachineStackEndpoint117BBC54ANY70948A72:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName:
-        Fn::GetAtt:
-          - stateMachineLambdaHandler8A4FAE4C
-          - Arn
-      Principal: apigateway.amazonaws.com
-      SourceArn:
-        Fn::Join:
-          - ""
-          - - "arn:"
-            - Ref: AWS::Partition
-            - ":execute-api:"
-            - Ref: AWS::Region
-            - ":"
-            - Ref: AWS::AccountId
-            - ":"
-            - Ref: EndpointEEF1FD8F
-            - /test-invoke-stage/*/
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/ANY/ApiPermission.Test.TheStateMachineStackEndpoint117BBC54.ANY..
-  EndpointANY485C938B:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: ANY
-      ResourceId:
-        Fn::GetAtt:
-          - EndpointEEF1FD8F
-          - RootResourceId
-      RestApiId:
-        Ref: EndpointEEF1FD8F
-      AuthorizationType: NONE
-      Integration:
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri:
-          Fn::Join:
-            - ""
-            - - "arn:"
-              - Ref: AWS::Partition
-              - ":apigateway:"
-              - Ref: AWS::Region
-              - :lambda:path/2015-03-31/functions/
-              - Fn::GetAtt:
-                  - stateMachineLambdaHandler8A4FAE4C
-                  - Arn
-              - /invocations
-    Metadata:
-      aws:cdk:path: TheStateMachineStack/Endpoint/Default/ANY/Resource
+      aws:cdk:path: TheStateMachineStack/DefaultRoute
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Modules: aws-cdk=1.23.0,@aws-cdk/assets=1.22.0,@aws-cdk/aws-apigateway=1.22.0,@aws-cdk/aws-applicationautoscaling=1.22.0,@aws-cdk/aws-autoscaling=1.22.0,@aws-cdk/aws-autoscaling-common=1.22.0,@aws-cdk/aws-autoscaling-hooktargets=1.22.0,@aws-cdk/aws-cloudwatch=1.22.0,@aws-cdk/aws-ec2=1.22.0,@aws-cdk/aws-ecr=1.22.0,@aws-cdk/aws-ecr-assets=1.22.0,@aws-cdk/aws-ecs=1.22.0,@aws-cdk/aws-elasticloadbalancingv2=1.22.0,@aws-cdk/aws-events=1.22.0,@aws-cdk/aws-iam=1.22.0,@aws-cdk/aws-kms=1.22.0,@aws-cdk/aws-lambda=1.22.0,@aws-cdk/aws-logs=1.22.0,@aws-cdk/aws-s3=1.22.0,@aws-cdk/aws-s3-assets=1.22.0,@aws-cdk/aws-servicediscovery=1.22.0,@aws-cdk/aws-sns=1.22.0,@aws-cdk/aws-sns-subscriptions=1.22.0,@aws-cdk/aws-sqs=1.22.0,@aws-cdk/aws-ssm=1.22.0,@aws-cdk/aws-stepfunctions=1.22.0,@aws-cdk/aws-stepfunctions-tasks=1.22.0,@aws-cdk/core=1.22.0,@aws-cdk/cx-api=1.22.0,@aws-cdk/region-info=1.22.0,jsii-runtime=node.js/v13.6.0
+      Analytics: v2:deflate64:H4sIAAAAAAAACl1Q0WrDMAz8lr477rKxwd7WBsYKGyvZF2iOmqpJ7GDJKSXk32e7K4w93Z04SSeVuiyf9d3qBc5cmKZbz8Z51POXgOnUhhkl0pZsqypnWXwwoqqD3YOHAQV9Ep9BxpDLNbIL3mDi0d+QkLOLSsPnHobvBvT8GqxJ5eS58UURDHquXZ9bM+5dT+aSl2W2KH4oICVinYNFrbfBdChbYFQsOB5+53EhwB3r97xzZyfX/TPEHEC9qo6OYtx4o+AHmCPZHOCvjvFHaqM+w2W61/ObyLgZKdkSJJledOu7kp0VbD3c7qxdEFyWRVnXoD7xeiqfdPmoy9WJiQofrNCAur7iD49nWtyVAQAA
+    Metadata:
+      aws:cdk:path: TheStateMachineStack/CDKMetadata/Default
     Condition: CDKMetadataAvailable
 Parameters:
-  AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3Bucket3B22C27E:
+  AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3Bucket842AB57C:
     Type: String
-    Description: S3 bucket for asset "0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1"
-  AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1S3VersionKey90FD0468:
+    Description: S3 bucket for asset "3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2"
+  AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2S3VersionKey7440F4A6:
     Type: String
-    Description: S3 key for asset version "0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1"
-  AssetParameters0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1ArtifactHash1F2FF90F:
+    Description: S3 key for asset version "3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2"
+  AssetParameters3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2ArtifactHashC439547F:
     Type: String
-    Description: Artifact hash for asset "0d5dbceb2a791d6d3d0ac358e89c666f3875384f5ef63102836115d19f0925f1"
+    Description: Artifact hash for asset "3aa19ed72e8ea76c34c614248d6c29318de75b3305cad99074ec671d6e8ff2c2"
+  AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3Bucket37CB776A:
+    Type: String
+    Description: S3 bucket for asset "57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09"
+  AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09S3VersionKeyB761AB89:
+    Type: String
+    Description: S3 key for asset version "57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09"
+  AssetParameters57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09ArtifactHash9C14D186:
+    Type: String
+    Description: Artifact hash for asset "57c0458c31e08a91a49324bae7ec70efda75c2d6846adfba6535e5632e1d7a09"
 Outputs:
-  Endpoint8024A810:
+  HTTPAPIUrl:
     Value:
       Fn::Join:
         - ""
         - - https://
-          - Ref: EndpointEEF1FD8F
+          - Ref: thestatemachineapi69C81CC4
           - .execute-api.
           - Ref: AWS::Region
           - "."
           - Ref: AWS::URLSuffix
           - /
-          - Ref: EndpointDeploymentStageprodB78BEEA0
-          - /
 Conditions:
   CDKMetadataAvailable:
     Fn::Or:
       - Fn::Or:
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - af-south-1
           - Fn::Equals:
               - Ref: AWS::Region
               - ap-east-1
@@ -465,13 +431,16 @@ Conditions:
           - Fn::Equals:
               - Ref: AWS::Region
               - cn-northwest-1
-          - Fn::Equals:
-              - Ref: AWS::Region
-              - eu-central-1
       - Fn::Or:
           - Fn::Equals:
               - Ref: AWS::Region
+              - eu-central-1
+          - Fn::Equals:
+              - Ref: AWS::Region
               - eu-north-1
+          - Fn::Equals:
+              - Ref: AWS::Region
+              - eu-south-1
           - Fn::Equals:
               - Ref: AWS::Region
               - eu-west-1
@@ -493,6 +462,7 @@ Conditions:
           - Fn::Equals:
               - Ref: AWS::Region
               - us-east-2
+      - Fn::Or:
           - Fn::Equals:
               - Ref: AWS::Region
               - us-west-1

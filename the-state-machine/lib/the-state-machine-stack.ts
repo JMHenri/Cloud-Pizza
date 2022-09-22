@@ -96,7 +96,7 @@ export class TheStateMachineStack extends cdk.Stack {
     /**
      * failures
      */
-    const storeClosed = new sfn.Fail(this, 'Cloud pizzas can only be delivered on odd numbered epoch times, try again when the store is open.', {
+    const storeClosed = new sfn.Fail(this, 'Cloud pizzas can only be delivered on odd numbered epochs', {
       cause: 'The store was closed',
       error: 'Pizza order canceled: Store closed',
     });
