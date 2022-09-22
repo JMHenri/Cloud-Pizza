@@ -23,38 +23,23 @@ test('API Gateway Proxy Created', () => {
 });
 
 
-test('State Machine Created', () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new TheStateMachine.TheStateMachineStack(app, 'MyTestStack');
-  // THEN
-  expectCDK(stack).to(haveResourceLike("AWS::StepFunctions::StateMachine", {
-    "DefinitionString": {
-      "Fn::Join": [
-        "",
-        [
-          "{\"StartAt\":\"Order Pizza Job\",\"States\":{\"Order Pizza Job\":{\"Next\":\"With Pineapple?\",\"Retry\":[{\"ErrorEquals\":[\"Lambda.ServiceException\",\"Lambda.AWSLambdaException\",\"Lambda.SdkClientException\"],\"IntervalSeconds\":2,\"MaxAttempts\":6,\"BackoffRate\":2}],\"Type\":\"Task\",\"InputPath\":\"$.flavour\",\"ResultPath\":\"$.pineappleAnalysis\",\"Resource\":\"",
-          {
-          },
-          "\"},\"With Pineapple?\":{\"Type\":\"Choice\",\"Choices\":[{\"Variable\":\"$.pineappleAnalysis.containsPineapple\",\"BooleanEquals\":true,\"Next\":\"Sorry, We Dont add Pineapple\"}],\"Default\":\"Lets make your pizza\"},\"Lets make your pizza\":{\"Type\":\"Succeed\",\"OutputPath\":\"$.pineappleAnalysis\"},\"Sorry, We Dont add Pineapple\":{\"Type\":\"Fail\",\"Error\":\"Failed To Make Pizza\",\"Cause\":\"They asked for Pineapple\"}},\"TimeoutSeconds\":300}"
-        ]
-      ]
-    },
-    "StateMachineType": "EXPRESS",
-    "TracingConfiguration": {
-      "Enabled": true
-    }
-  }
-  ));
-});
-
-test('Order Pizza Lambda Created', () => {
+test('Web Post Lambda Created', () => {
   const app = new cdk.App();
   // WHEN
   const stack = new TheStateMachine.TheStateMachineStack(app, 'MyTestStack');
   // THEN
   expectCDK(stack).to(haveResourceLike("AWS::Lambda::Function", {
-    "Handler": "orderPizza.handler"
+    "Handler": "webPostPizza.handler"
+  }
+  ));
+});
+test('Check Delivery Type Lambda Created', () => {
+  const app = new cdk.App();
+  // WHEN
+  const stack = new TheStateMachine.TheStateMachineStack(app, 'MyTestStack');
+  // THEN
+  expectCDK(stack).to(haveResourceLike("AWS::Lambda::Function", {
+    "Handler": "checkDeliveryType.handler"
   }
   ));
 });
