@@ -44,3 +44,19 @@ test('Check Delivery Type Lambda Created', () => {
   ));
 });
 
+// test('Check Delivery Type Unit Test', () => {
+//   const physicalDeliveryRes = handler({
+//     addressType: 'physical'
+//   });
+//   const emailDeliveryRes = handler({
+//     addressType: 'email'
+//   });
+//   const postDeliveryRes = handler({
+//     addressType: 'post'
+//   });
+
+//   expect(physicalDeliveryRes).toBe(false);
+//   expect(emailDeliveryRes).toBe(true);
+//   expect(postDeliveryRes).toBe(true);
+// });
+
